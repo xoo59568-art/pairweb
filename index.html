@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#07070f">
+<meta name="description" content="RabbitXMD WhatsApp Bot Pairing Portal — Link your WhatsApp and activate your bot in seconds.">
+<title>RabbitXMD — WhatsApp Bot Pairing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #07070f;
+  --card:         rgba(255,255,255,0.03);
+  --card-hov:     rgba(255,255,255,0.05);
+  --border:       rgba(255,255,255,0.08);
+  --border-hov:   rgba(255,255,255,0.16);
+  --green:        #22c55e;
+  --green-dim:    rgba(34,197,94,0.12);
+  --green-glow:   rgba(34,197,94,0.35);
+  --purple:       #a855f7;
+  --purple-dim:   rgba(168,85,247,0.12);
+  --red:          #ef4444;
+  --red-dim:      rgba(239,68,68,0.12);
+  --amber:        #f59e0b;
+  --text:         #f1f5f9;
+  --text-muted:   #94a3b8;
+  --text-dim:     #475569;
+  --r:            16px;
+  --r-sm:         10px;
+  --shadow:       0 32px 64px rgba(0,0,0,0.6), 0 8px 24px rgba(0,0,0,0.3);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 40px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── Animated Background ── */
+.bg-wrap {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.1;
+  animation: blobFloat 22s ease-in-out infinite;
+}
+.b1 { width:600px; height:600px; background:#22c55e; top:-200px; left:-150px; animation-delay:0s; }
+.b2 { width:500px; height:500px; background:#a855f7; bottom:-150px; right:-150px; animation-delay:-9s; }
+.b3 { width:350px; height:350px; background:#3b82f6; top:40%; left:40%; animation-delay:-17s; }
+@keyframes blobFloat {
+  0%,100% { transform:translate(0,0) scale(1); }
+  33%      { transform:translate(40px,-40px) scale(1.08); }
+  66%      { transform:translate(-30px,25px) scale(0.94); }
+}
+
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── Layout ── */
+.container { width:100%; max-width:480px; position:relative; z-index:1; }
+
+/* ── Header ── */
+.header {
+  text-align: center;
+  margin-bottom: 28px;
+  animation: fadeDown 0.7s cubic-bezier(.16,1,.3,1) both;
+}
+.logo-ring {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width:84px; height:84px; border-radius:28px;
+  background: linear-gradient(135deg, rgba(34,197,94,.12), rgba(168,85,247,.12));
+  border: 1px solid rgba(34,197,94,.25);
+  font-size: 42px;
+  margin-bottom: 18px;
+  animation: ringPulse 3.5s ease-in-out infinite;
+  position: relative;
+}
+.logo-ring::after {
+  content:''; position:absolute; inset:-4px; border-radius:30px;
+  background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(168,85,247,.15));
+  z-index:-1; filter:blur(8px);
+  animation: ringPulse 3.5s ease-in-out infinite reverse;
+}
+@keyframes ringPulse {
+  0%,100% { box-shadow:0 0 40px rgba(34,197,94,.15),0 0 80px rgba(168,85,247,.08); }
+  50%      { box-shadow:0 0 70px rgba(34,197,94,.28),0 0 130px rgba(168,85,247,.18); }
+}
+.brand {
+  font-size: 34px; font-weight:900; letter-spacing:-1px;
+  background: linear-gradient(130deg, #22c55e 10%, #a855f7 90%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; margin-bottom:6px;
+}
+.brand-tagline { color:var(--text-muted); font-size:13.5px; letter-spacing:.3px; }
+
+/* ── Steps Bar ── */
+.steps {
+  display:flex; align-items:center; justify-content:center;
+  gap:2px; margin-bottom:24px;
+  animation: fadeUp 0.7s cubic-bezier(.16,1,.3,1) 0.1s both;
+  overflow-x:auto; padding:2px 4px;
+  scrollbar-width:none; -webkit-overflow-scrolling:touch;
+}
+.steps::-webkit-scrollbar { display:none; }
+.step { display:flex; flex-direction:column; align-items:center; gap:5px; min-width:60px; }
+.step-circle {
+  width:30px; height:30px; border-radius:50%;
+  background:var(--card); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700; color:var(--text-dim);
+  transition:all .4s;
+}
+.step.done   .step-circle { background:linear-gradient(135deg,var(--green),#16a34a); border-color:transparent; color:#fff; box-shadow:0 0 14px var(--green-glow); }
+.step.active .step-circle { background:linear-gradient(135deg,var(--purple),#7c3aed); border-color:transparent; color:#fff; box-shadow:0 0 14px rgba(168,85,247,.4); }
+.step-txt { font-size:9.5px; color:var(--text-dim); text-align:center; white-space:nowrap; font-weight:500; }
+.step.active .step-txt,
+.step.done   .step-txt  { color:var(--text-muted); }
+.step-arrow { color:var(--text-dim); font-size:11px; flex-shrink:0; margin-bottom:14px; }
+
+/* ── Card ── */
+.card {
+  background:var(--card); border:1px solid var(--border); border-radius:24px;
+  padding:30px 28px; backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  box-shadow:var(--shadow);
+  animation: fadeUp 0.7s cubic-bezier(.16,1,.3,1) 0.15s both;
+  transition:border-color .3s; min-height:200px;
+}
+.card:hover { border-color:var(--border-hov); }
+
+/* ── Sections ── */
+.sec { animation: secIn .4s cubic-bezier(.16,1,.3,1) both; }
+.sec.hidden { display:none !important; }
+@keyframes secIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── Input Section ── */
+.sec-title { font-size:17px; font-weight:700; color:var(--text); margin-bottom:5px; }
+.sec-desc  { font-size:13px; color:var(--text-muted); margin-bottom:22px; line-height:1.6; }
+.field-label {
+  display:block; font-size:11px; font-weight:700; color:var(--text-muted);
+  text-transform:uppercase; letter-spacing:.8px; margin-bottom:8px;
+}
+.input-row { display:flex; gap:8px; margin-bottom:10px; }
+.phone-input {
+  flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border);
+  border-radius:var(--r-sm); padding:13px 16px;
+  color:var(--text); font-family:'JetBrains Mono',monospace;
+  font-size:15px; font-weight:500; outline:none; transition:all .25s; min-width:0;
+}
+.phone-input::placeholder { color:var(--text-dim); font-weight:400; }
+.phone-input:focus {
+  border-color:var(--green); background:rgba(34,197,94,.05);
+  box-shadow:0 0 0 3px rgba(34,197,94,.12);
+}
+.btn-gen {
+  flex-shrink:0; padding:13px 20px;
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  border:none; border-radius:var(--r-sm); color:#fff;
+  font-weight:700; font-size:13.5px; cursor:pointer;
+  transition:all .25s; white-space:nowrap; letter-spacing:.2px;
+  box-shadow:0 4px 18px rgba(34,197,94,.35);
+}
+.btn-gen:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 7px 24px rgba(34,197,94,.45); }
+.btn-gen:active:not(:disabled) { transform:translateY(0); }
+.btn-gen:disabled { opacity:.45; cursor:not-allowed; }
+.hint { font-size:12px; color:var(--text-dim); line-height:1.5; }
+.hint b { color:var(--text-muted); font-weight:500; }
+
+/* ── Loading ── */
+.load-wrap { text-align:center; padding:28px 0; }
+.spinner {
+  width:52px; height:52px;
+  border:3px solid rgba(34,197,94,.1); border-top-color:var(--green);
+  border-radius:50%; animation:spin .75s linear infinite;
+  margin:0 auto 18px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.load-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:5px; }
+.load-sub   { font-size:12.5px; color:var(--text-muted); }
+
+/* ── Code Section ── */
+.code-label {
+  text-align:center; font-size:11px; font-weight:700;
+  color:var(--text-muted); text-transform:uppercase;
+  letter-spacing:1px; margin-bottom:12px;
+}
+.code-box {
+  background:rgba(34,197,94,.05); border:2px solid rgba(34,197,94,.3);
+  border-radius:var(--r); padding:22px 16px; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:30px;
+  font-weight:700; letter-spacing:5px; color:var(--green);
+  text-shadow:0 0 35px rgba(34,197,94,.6);
+  box-shadow:0 0 35px rgba(34,197,94,.08),inset 0 0 35px rgba(34,197,94,.03);
+  margin-bottom:12px; cursor:pointer; user-select:all;
+  animation:codeGlow 2.5s ease-in-out infinite;
+  transition:border-color .25s; word-break:break-all;
+}
+.code-box:hover { border-color:rgba(34,197,94,.5); }
+@keyframes codeGlow {
+  0%,100% { box-shadow:0 0 35px rgba(34,197,94,.08),inset 0 0 35px rgba(34,197,94,.03); }
+  50%      { box-shadow:0 0 55px rgba(34,197,94,.18),inset 0 0 50px rgba(34,197,94,.07); }
+}
+.btn-copy {
+  width:100%; padding:12px;
+  background:var(--green-dim); border:1px solid rgba(34,197,94,.28);
+  border-radius:var(--r-sm); color:var(--green);
+  font-weight:600; font-size:13.5px; cursor:pointer;
+  transition:all .25s; margin-bottom:18px; letter-spacing:.2px;
+  display:flex; align-items:center; justify-content:center; gap:7px;
+}
+.btn-copy:hover { background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.45); }
+.btn-copy.copied { background:rgba(34,197,94,.2); color:#4ade80; }
+
+/* Status badge */
+.status-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:6px 13px; border-radius:100px;
+  font-size:12px; font-weight:600; margin-bottom:14px;
+}
+.badge-wait { background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.3); color:var(--amber); }
+.badge-ok   { background:var(--green-dim); border:1px solid rgba(34,197,94,.3); color:var(--green); }
+.s-dot { width:7px; height:7px; border-radius:50%; background:currentColor; animation:dotBlink 1.2s ease infinite; }
+@keyframes dotBlink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+/* Instructions */
+.instr {
+  background:rgba(255,255,255,.02); border:1px solid var(--border);
+  border-radius:var(--r-sm); padding:16px; margin-bottom:18px;
+}
+.instr-head {
+  font-size:11px; font-weight:700; color:var(--text-muted);
+  text-transform:uppercase; letter-spacing:.6px;
+  margin-bottom:12px; display:flex; align-items:center; gap:6px;
+}
+.instr-list { list-style:none; }
+.instr-item {
+  display:flex; align-items:flex-start; gap:9px;
+  font-size:13px; color:var(--text-muted); margin-bottom:8px; line-height:1.45;
+}
+.instr-item:last-child { margin-bottom:0; }
+.i-num {
+  flex-shrink:0; width:19px; height:19px; background:var(--purple-dim);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:700; color:var(--purple); margin-top:1px;
+}
+.instr-item b { color:var(--text); font-weight:600; }
+
+/* Timer */
+.timer-wrap {
+  display:flex; align-items:center; justify-content:center;
+  gap:6px; font-size:12px; color:var(--text-dim); margin-bottom:18px;
+}
+.timer-val { color:var(--amber); font-family:'JetBrains Mono',monospace; font-weight:600; font-size:13px; }
+
+.btn-back {
+  width:100%; padding:12px; background:transparent;
+  border:1px solid var(--border); border-radius:var(--r-sm);
+  color:var(--text-muted); font-size:13px; font-weight:500;
+  cursor:pointer; transition:all .25s;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.btn-back:hover { border-color:var(--border-hov); color:var(--text); }
+
+/* ── Error ── */
+.err-wrap { text-align:center; padding:12px 0; }
+.err-icon  { font-size:42px; margin-bottom:12px; }
+.err-title { font-size:16px; font-weight:700; color:var(--red); margin-bottom:6px; }
+.err-msg   { font-size:13px; color:var(--text-muted); margin-bottom:22px; line-height:1.6; }
+.btn-retry {
+  width:100%; padding:13px; background:var(--red-dim);
+  border:1px solid rgba(239,68,68,.3); border-radius:var(--r-sm);
+  color:var(--red); font-weight:600; font-size:14px; cursor:pointer; transition:all .25s;
+}
+.btn-retry:hover { background:rgba(239,68,68,.18); }
+
+/* ── Connected Banner ── */
+.success-banner {
+  display:flex; align-items:center; gap:11px;
+  background:var(--green-dim); border:1px solid rgba(34,197,94,.25);
+  border-radius:var(--r-sm); padding:14px 16px; margin-bottom:18px;
+  animation:secIn .4s ease;
+}
+.success-icon { font-size:22px; flex-shrink:0; }
+.success-text { font-size:13px; color:#4ade80; font-weight:500; line-height:1.5; }
+
+/* ── Footer ── */
+.footer { text-align:center; margin-top:22px; animation:fadeUp 0.7s cubic-bezier(.16,1,.3,1) 0.25s both; }
+.foot-line { font-size:12px; color:var(--text-dim); margin-bottom:3px; }
+.foot-line span { color:var(--purple); font-weight:600; }
+
+@keyframes fadeDown { from{opacity:0;transform:translateY(-22px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeUp   { from{opacity:0;transform:translateY(22px)}  to{opacity:1;transform:translateY(0)} }
+
+/* ── Mobile ── */
+@media (max-width:440px) {
+  .card      { padding:22px 18px; border-radius:20px; }
+  .brand     { font-size:28px; }
+  .logo-ring { width:70px; height:70px; font-size:34px; border-radius:22px; }
+  .code-box  { font-size:22px; letter-spacing:3px; padding:18px 12px; }
+  .input-row { flex-direction:column; }
+  .btn-gen   { width:100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="bg-wrap">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-ring">🐰</div>
+    <div class="brand">RabbitXMD</div>
+    <div class="brand-tagline">WhatsApp Bot Activation Portal</div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps">
+    <div class="step active" id="s1">
+      <div class="step-circle">01</div>
+      <div class="step-txt">Enter<br>Number</div>
+    </div>
+    <div class="step-arrow">›</div>
+    <div class="step" id="s2">
+      <div class="step-circle">02</div>
+      <div class="step-txt">Get<br>Code</div>
+    </div>
+    <div class="step-arrow">›</div>
+    <div class="step" id="s3">
+      <div class="step-circle">03</div>
+      <div class="step-txt">Link<br>Device</div>
+    </div>
+    <div class="step-arrow">›</div>
+    <div class="step" id="s4">
+      <div class="step-circle">04</div>
+      <div class="step-txt">Bot<br>Active!</div>
+    </div>
+  </div>
+
+  <!-- Main Card -->
+  <div class="card">
+
+    <!-- Input Section -->
+    <div class="sec" id="secInput">
+      <div class="sec-title">🚀 Activate Your Bot</div>
+      <div class="sec-desc">Enter your WhatsApp number with country code. We'll generate a pairing code — enter it in WhatsApp to link your bot instantly.</div>
+      <label class="field-label" for="phoneInput">WhatsApp Number</label>
+      <div class="input-row">
+        <input
+          class="phone-input" id="phoneInput"
+          type="tel" inputmode="numeric"
+          placeholder="919876543210"
+          maxlength="15" autocomplete="off"
+        />
+        <button class="btn-gen" id="btnGen" onclick="generateCode()">Generate</button>
+      </div>
+      <div class="hint">Include <b>country code</b> without + or spaces &nbsp;·&nbsp; Example: <b>91</b>9876543210</div>
+    </div>
+
+    <!-- Loading -->
+    <div class="sec hidden" id="secLoad">
+      <div class="load-wrap">
+        <div class="spinner"></div>
+        <div class="load-title">Generating Pairing Code…</div>
+        <div class="load-sub">Connecting to WhatsApp servers, please wait</div>
+      </div>
+    </div>
+
+    <!-- Code Section -->
+    <div class="sec hidden" id="secCode">
+      <div style="text-align:center;margin-bottom:16px;">
+        <span class="status-badge badge-wait" id="statusBadge">
+          <span class="s-dot"></span> Waiting for connection…
+        </span>
+      </div>
+
+      <div class="code-label">Your Pairing Code</div>
+      <div class="code-box" id="codeBox" title="Click to copy" onclick="copyCode()">––––</div>
+      <button class="btn-copy" id="btnCopy" onclick="copyCode()">
+        <span id="copyIcon">📋</span>
+        <span id="copyTxt">Copy Code</span>
+      </button>
+
+      <div class="instr">
+        <div class="instr-head">📱 How to link in WhatsApp</div>
+        <ul class="instr-list">
+          <li class="instr-item"><span class="i-num">1</span><span>Open <b>WhatsApp</b> on your phone</span></li>
+          <li class="instr-item"><span class="i-num">2</span><span>Tap <b>⋮ Menu</b> (top right) → <b>Linked Devices</b></span></li>
+          <li class="instr-item"><span class="i-num">3</span><span>Tap <b>"Link a Device"</b></span></li>
+          <li class="instr-item"><span class="i-num">4</span><span>Tap <b>"Link with phone number instead"</b></span></li>
+          <li class="instr-item"><span class="i-num">5</span><span>Enter the <b>pairing code</b> above → Bot activates! 🎉</span></li>
+        </ul>
+      </div>
+
+      <div class="timer-wrap">
+        ⏱ Code expires in <span class="timer-val" id="timerVal">05:00</span>
+      </div>
+
+      <button class="btn-back" onclick="resetForm()">← Try a different number</button>
+    </div>
+
+    <!-- Connected -->
+    <div class="sec hidden" id="secConnected">
+      <div class="success-banner">
+        <span class="success-icon">✅</span>
+        <div class="success-text">
+          <strong>Bot Connected Successfully!</strong><br>
+          Your RabbitXMD bot starts within 2 minutes. Check your WhatsApp inbox for confirmation.
+        </div>
+      </div>
+      <div class="instr">
+        <div class="instr-head">🎉 What happens next?</div>
+        <ul class="instr-list">
+          <li class="instr-item"><span class="i-num">1</span><span>You received a <b>welcome message</b> on WhatsApp</span></li>
+          <li class="instr-item"><span class="i-num">2</span><span>Your <b>session is saved</b> securely (expires in 5 min)</span></li>
+          <li class="instr-item"><span class="i-num">3</span><span>Bot starts <b>automatically</b> — no further action needed</span></li>
+        </ul>
+      </div>
+      <button class="btn-back" onclick="resetForm()">← Pair another number</button>
+    </div>
+
+    <!-- Error -->
+    <div class="sec hidden" id="secError">
+      <div class="err-wrap">
+        <div class="err-icon">❌</div>
+        <div class="err-title">Pairing Failed</div>
+        <div class="err-msg" id="errMsg">Something went wrong. Please try again.</div>
+        <button class="btn-retry" onclick="resetForm()">🔄 Try Again</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="foot-line">Made with ❤️ by <span>RabbitXMD Team</span></div>
+    <div class="foot-line">Sessions auto-expire in 5 minutes · No data stored permanently</div>
+  </div>
+
+</div>
+
+<script>
+  let timerInterval = null;
+  let timerLeft     = 300;
+  const $           = id => document.getElementById(id);
+
+  function showSection(id) {
+    ['secInput','secLoad','secCode','secConnected','secError']
+      .forEach(s => $(s).classList.toggle('hidden', s !== id));
+  }
+
+  function setStep(n) {
+    for (let i = 1; i <= 4; i++) {
+      const el = $('s' + i);
+      el.classList.remove('active','done');
+      if (i < n)  el.classList.add('done');
+      if (i === n) el.classList.add('active');
+    }
+  }
+
+  async function generateCode() {
+    const raw   = $('phoneInput').value.trim();
+    const clean = raw.replace(/\D/g, '');
+
+    if (!clean)                              return shake($('phoneInput'), 'Please enter your WhatsApp number.');
+    if (clean.length < 7 || clean.length > 15) return shake($('phoneInput'), 'Phone number must be 7–15 digits including country code.');
+
+    $('btnGen').disabled = true;
+    showSection('secLoad');
+    setStep(2);
+
+    try {
+      const resp = await fetch('/pair', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ number: clean })
+      });
+      const data = await resp.json();
+
+      if (!data.success) { showError(data.error || 'Unknown error. Please try again.'); return; }
+
+      $('codeBox').textContent = data.pairCode || '––––';
+      showSection('secCode');
+      setStep(3);
+      startTimer();
+
+    } catch (e) {
+      showError('Network error. Check your connection and try again.');
+    }
+  }
+
+  function copyCode() {
+    const code = $('codeBox').textContent;
+    if (!code || code === '––––') return;
+    navigator.clipboard.writeText(code).then(() => {
+      $('copyTxt').textContent = 'Copied!';
+      $('copyIcon').textContent = '✅';
+      $('btnCopy').classList.add('copied');
+      setTimeout(() => {
+        $('copyTxt').textContent = 'Copy Code';
+        $('copyIcon').textContent = '📋';
+        $('btnCopy').classList.remove('copied');
+      }, 2500);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      $('copyTxt').textContent = 'Copied!';
+      setTimeout(() => { $('copyTxt').textContent = 'Copy Code'; }, 2000);
+    });
+  }
+
+  function startTimer() {
+    clearInterval(timerInterval);
+    timerLeft = 300;
+    updateTimer();
+    timerInterval = setInterval(() => {
+      timerLeft--;
+      updateTimer();
+      if (timerLeft <= 0) {
+        clearInterval(timerInterval);
+        $('timerVal').textContent = 'Expired';
+        $('timerVal').style.color = 'var(--red)';
+      }
+    }, 1000);
+  }
+
+  function updateTimer() {
+    const m = String(Math.floor(timerLeft / 60)).padStart(2,'0');
+    const s = String(timerLeft % 60).padStart(2,'0');
+    $('timerVal').textContent = m + ':' + s;
+  }
+
+  function showError(msg) {
+    clearInterval(timerInterval);
+    $('errMsg').textContent = msg;
+    showSection('secError');
+    setStep(1);
+    $('btnGen').disabled = false;
+  }
+
+  function resetForm() {
+    clearInterval(timerInterval);
+    $('phoneInput').value    = '';
+    $('btnGen').disabled     = false;
+    $('timerVal').textContent = '05:00';
+    $('timerVal').style.color = '';
+    showSection('secInput');
+    setStep(1);
+  }
+
+  function shake(el, msg) {
+    el.style.borderColor = 'var(--red)';
+    el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,.15)';
+    setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 1600);
+    if (msg) alert(msg);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    $('phoneInput').addEventListener('keydown', e => { if (e.key === 'Enter') generateCode(); });
+    $('phoneInput').addEventListener('input',   e => { e.target.value = e.target.value.replace(/\D/g, ''); });
+  });
+</script>
+</body>
+</html>
